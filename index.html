@@ -1388,146 +1388,171 @@ function csNav(dir) { csGoto(csIndex + dir); }
 // ══════════════════════════════════════════════════════
 
 // All screen IDs in the game
+
+/* [GUARD: SCREEN_CONTROL] - CLAUDE NÃO ALTERA ESTE BLOCO */
 const SCREENS = ['splash', 'main-menu', 'char-select', 'game-canvas'];
+const UIManager = {
+  init() {
+    this.showScreen('splash');
+  },
 
-function showScreen(screenId) {
-  // Hide ALL screens
-  SCREENS.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  // Hide HUD by default
-  document.getElementById('hud').style.display = 'none';
+  showScreen(screenId) {
+    SCREENS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    const hud = document.getElementById('hud');
+    if (hud) hud.style.display = 'none';
 
-  // Show target screen — some screens need flex
-  const target = document.getElementById(screenId);
-  if (target) {
-    const flexScreens = ['main-menu','char-select'];
-    target.style.display = flexScreens.includes(screenId) ? 'flex' : 'block';
-  }
-
-  // Canvas + game logic: only run when in-game
-  if (screenId === 'game-canvas') {
-    started = true;
-    document.getElementById('hud').style.display = 'block';
-    if (window._MOBILE) window._MOBILE.resize();
-  } else {
-    started = false;
-  }
-
-  // Always sync AI mode pills
-  syncPills();
-}
-
-function syncPills() {
-  // Sync ALL pill elements across all screens
-  document.querySelectorAll('.mode-pill, .mm-pill').forEach(el => {
-    el.classList.remove('active');
-  });
-  // Activate correct pills
-  ['pill-', 'mpill-'].forEach(prefix => {
-    const el = document.getElementById(prefix + aiMode);
-    if (el) el.classList.add('active');
-  });
-}
-
-function setMode(m) {
-  aiMode = m;
-  syncPills();
-}
-
-// Called from splash "Iniciar Aventura" button
-function startGame() {
-  const k = document.getElementById('api-key-input').value.trim();
-  if (k) claudeKey = k;
-
-  const sp = document.getElementById('splash');
-  sp.style.transition = 'opacity 0.7s';
-  sp.style.opacity = '0';
-  setTimeout(() => {
-    sp.style.display = 'none';
-    // Init joystick once (won't re-init if already done)
-    if (!window._joystickInited) {
-      initJoystick();
-      window._joystickInited = true;
+    const target = document.getElementById(screenId);
+    if (target) {
+      const flexScreens = ['main-menu','char-select'];
+      target.style.display = flexScreens.includes(screenId) ? 'flex' : 'block';
     }
-    showScreen('main-menu');
-  }, 700);
-}
 
-function openMainMenu() {
-  showScreen('main-menu');
-}
-
-function openCharSelect() {
-  buildCarousel();
-  const idx = selectedChar ? CLASSES.findIndex(c => c.id === selectedChar.id) : 0;
-  csGoto(idx >= 0 ? idx : 0);
-  showScreen('char-select');
-}
-
-function closeCharSelect() {
-  showScreen('main-menu');
-}
-
-function confirmChar() {
-  selectedChar = CLASSES[csIndex];
-  showScreen('main-menu');
-  // Update menu to show selected character
-  const preview = document.getElementById('mm-char-preview');
-  if (preview) {
-    document.getElementById('mm-char-emoji').textContent = selectedChar.emoji;
-    document.getElementById('mm-char-name').textContent = selectedChar.name;
-    document.getElementById('mm-char-class').textContent = selectedChar.cls;
-    document.getElementById('mm-play-desc').textContent = 'Jogar como ' + selectedChar.name;
-    document.getElementById('mm-char-desc').textContent = selectedChar.name + ' está pronto';
-    preview.classList.add('show');
-    document.getElementById('mm-logo-area').style.opacity = '0.25';
-  }
-  toast('⚔️ ' + selectedChar.name + ' selecionado!');
-}
-
-function launchGame() {
-  // Guard: must select a character first
-  if (!selectedChar) {
-    toast('⚠️ Escolha um personagem primeiro!');
-    const btn = document.querySelector('#mm-buttons .mm-btn:last-child');
-    if (btn) {
-      btn.style.borderColor = 'rgba(201,168,76,0.9)';
-      setTimeout(() => btn.style.borderColor = '', 800);
+    if (screenId === 'game-canvas') {
+      if (hud) hud.style.display = 'block';
+      EventBridge.emit('game_started');
+    } else {
+      EventBridge.emit('game_stopped');
     }
-    return;
+    this.syncPills();
+  },
+
+  syncPills() {
+    document.querySelectorAll('.mode-pill, .mm-pill').forEach(el => el.classList.remove('active'));
+    ['pill-', 'mpill-'].forEach(prefix => {
+      const el = document.getElementById(prefix + aiMode);
+      if (el) el.classList.add('active');
+    });
+  },
+
+  setMode(m) {
+    aiMode = m;
+    this.syncPills();
+    EventBridge.emit('mode_changed', m);
+  },
+
+  startGame() {
+    const k = document.getElementById('api-key-input');
+    if (k && k.value.trim()) claudeKey = k.value.trim();
+    const sp = document.getElementById('splash');
+    if (sp) {
+      sp.style.transition = 'opacity 0.7s';
+      sp.style.opacity = '0';
+      setTimeout(() => { this.showScreen('main-menu'); }, 700);
+    } else {
+      this.showScreen('main-menu');
+    }
+  },
+
+  openMainMenu()   { this.showScreen('main-menu'); },
+  openCharSelect() {
+    if (typeof buildCarousel === 'function') buildCarousel();
+    this.showScreen('char-select');
+  },
+  closeCharSelect() { this.showScreen('main-menu'); },
+
+  confirmChar(index) {
+    if (typeof index === 'number' && typeof CLASSES !== 'undefined' && CLASSES[index]) {
+      selectedChar = CLASSES[index];
+    } else if (typeof csIndex !== 'undefined' && typeof CLASSES !== 'undefined') {
+      selectedChar = CLASSES[csIndex];
+    }
+    this.showScreen('main-menu');
+    EventBridge.emit('character_selected', selectedChar);
+    if (selectedChar) toast('⚔️ ' + selectedChar.name + ' selecionado!');
+  },
+
+  launchGame() {
+    if (!selectedChar) {
+      toast('⚠️ Escolha um personagem primeiro!');
+      return;
+    }
+    if (window._MOBILE) window._MOBILE.goFullscreen();
+    this.showScreen('game-canvas');
+    EventBridge.emit('start_game', { char: selectedChar, mode: aiMode });
   }
+};
+/* [END_GUARD] */
 
-  // Rebuild player mesh for selected class
-  buildPlayerMesh(selectedChar.id);
+// ── Aliases globais para compatibilidade com onclick no HTML ──
+function showScreen(screenId)   { UIManager.showScreen(screenId); }
+function syncPills()            { UIManager.syncPills(); }
+function setMode(m)             { UIManager.setMode(m); }
+function startGame()            { UIManager.startGame(); }
+function openMainMenu()         { UIManager.openMainMenu(); }
+function openCharSelect()       { UIManager.openCharSelect(); }
+function closeCharSelect()      { UIManager.closeCharSelect(); }
+function confirmChar(index)     { UIManager.confirmChar(index); }
+function launchGame()           { UIManager.launchGame(); }
 
-  // Request fullscreen
-  if (window._MOBILE) window._MOBILE.goFullscreen();
-
-  // Switch to game
-  showScreen('game-canvas');
-
-  // Init AI
-  if (aiMode === 'webllm') {
-    setPip('loading', 'Iniciando IA...');
-    initLLM();
-  } else if (aiMode === 'claude' && claudeKey) {
-    setPip('ready', 'Claude API');
-    setTimeout(() => document.getElementById('ai-pip').classList.add('hidden'), 3000);
-  } else {
-    document.getElementById('ai-pip').classList.add('hidden');
+// ── EventBridge ──
+const EventBridge = {
+  listeners: {},
+  on(event, callback) {
+    if (!this.listeners[event]) this.listeners[event] = [];
+    this.listeners[event].push(callback);
+    return () => this.off(event, callback);
+  },
+  off(event, callback) {
+    if (!this.listeners[event]) return;
+    this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+  },
+  emit(event, data) {
+    if (!this.listeners[event]) return;
+    this.listeners[event].forEach(callback => {
+      try { callback(data); } catch(e) { console.error('[EventBridge]', event, e); }
+    });
+  },
+  once(event, callback) {
+    const wrapper = (data) => { callback(data); this.off(event, wrapper); };
+    this.on(event, wrapper);
   }
+};
 
-  setTimeout(() => window._MOBILE && window._MOBILE.resize(), 400);
-  toast('⚔️ Bem-vindo, ' + selectedChar.name + '!');
-}
-
-// Init: show splash on load
-document.addEventListener('DOMContentLoaded', () => {
-  showScreen('splash');
+// ── GameEngine listeners — ÚNICA ponte entre UI e Three.js ──
+// Claude só mexe AQUI, nunca no bloco GUARD acima
+EventBridge.on('game_started', function() {
+  started = true;
+  if (window._MOBILE) window._MOBILE.resize();
 });
 
+EventBridge.on('game_stopped', function() {
+  started = false;
+});
+
+EventBridge.on('start_game', function(data) {
+  // Rebuild player mesh for selected class
+  if (typeof buildPlayerMesh === 'function' && data.char) {
+    buildPlayerMesh(data.char.id);
+  }
+  // Init AI
+  if (data.mode === 'webllm') {
+    setPip('loading', 'Iniciando IA...');
+    if (typeof initLLM === 'function') initLLM();
+  } else if (data.mode === 'claude' && claudeKey) {
+    setPip('ready', 'Claude API');
+    setTimeout(() => {
+      const pip = document.getElementById('ai-pip');
+      if (pip) pip.classList.add('hidden');
+    }, 3000);
+  } else {
+    const pip = document.getElementById('ai-pip');
+    if (pip) pip.classList.add('hidden');
+  }
+  setTimeout(() => window._MOBILE && window._MOBILE.resize(), 400);
+  toast('⚔️ Bem-vindo, ' + (data.char ? data.char.name : 'aventureiro') + '!');
+});
+
+EventBridge.on('mode_changed', function(m) {
+  console.log('[GameEngine] modo IA:', m);
+});
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  UIManager.init();
+});
 
 // ══ GAME LOOP ══
 const clock=new THREE.Clock();let time=0;
