@@ -557,6 +557,72 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 
 /* UTILS */
 .hidden { display:none !important; }
+
+/* ── Kimi: Animação de seleção de personagem ── */
+#mm-char-emoji {
+  font-size: 48px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: inline-block;
+}
+#mm-char-emoji.switching {
+  transform: scale(0.7) rotate(-8deg);
+  opacity: 0;
+}
+#mm-char-emoji.selected-anim {
+  animation: charPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes charPop {
+  0%   { transform: scale(0.8) rotate(5deg); opacity: 0.5; }
+  60%  { transform: scale(1.15) rotate(-2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+#mm-char-name {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: var(--nordic-gold);
+  margin-top: 4px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#mm-char-name.switching {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+#mm-char-name.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Kimi: Responsividade mobile rigorosa ── */
+@media (max-height: 640px) {
+  #mm-logo-area { padding: 4vh 0 0 0; }
+  #mm-title { font-size: clamp(28px, 8vw, 48px); letter-spacing: 5px; }
+  #mm-char-emoji { font-size: 38px; }
+  #mm-char-preview { margin: 1vh 0; }
+  #mm-buttons { padding: 0 20px 20px 20px; gap: 8px; }
+  .mm-btn { height: 44px; line-height: 44px; font-size: 13px; }
+  .mm-btn.primary { height: 48px; line-height: 48px; }
+}
+@media (max-width: 360px) {
+  .mm-pill { padding: 6px 10px; font-size: 11px; }
+  #mm-title { letter-spacing: 4px; }
+  #mm-buttons { padding: 0 12px 20px 12px; }
+}
+@media (min-width: 768px) {
+  #mm-title { font-size: 56px; }
+  #mm-buttons { max-width: 480px; margin: 0 auto; }
+}
+
+/* ── Kimi: Fade in do game canvas ── */
+#game-canvas {
+  transition: opacity 0.6s ease;
+}
+#game-canvas.fading-in {
+  opacity: 0;
+}
+#game-canvas.visible {
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -1532,10 +1598,12 @@ const EventBridge = {
 EventBridge.on('game_started', function() {
   started = true;
   if (window._MOBILE) window._MOBILE.resize();
+  startLoop(); // ← Kimi: inicia loop APENAS quando necessário
 });
 
 EventBridge.on('game_stopped', function() {
   started = false;
+  stopLoop(); // ← Kimi: para loop completamente, libera CPU/GPU
 });
 
 EventBridge.on('start_game', function(data) {
@@ -1565,6 +1633,45 @@ EventBridge.on('mode_changed', function(m) {
   console.log('[GameEngine] modo IA:', m);
 });
 
+// ── Kimi: animação de seleção de personagem no menu ──
+EventBridge.on('character_selected', function(char) {
+  if(!char) return;
+  const emojiEl = document.getElementById('mm-char-emoji');
+  const nameEl  = document.getElementById('mm-char-name');
+  const classEl = document.getElementById('mm-char-class');
+  if(!emojiEl || !nameEl) return;
+
+  // Fase 1: saída
+  emojiEl.classList.add('switching');
+  nameEl.classList.add('switching');
+
+  setTimeout(() => {
+    // Fase 2: troca conteúdo
+    emojiEl.textContent = char.emoji || '🧙';
+    nameEl.textContent  = char.name  || '';
+    if(classEl) classEl.textContent = char.role || '';
+
+    // Fase 3: entrada com bounce
+    emojiEl.classList.remove('switching');
+    emojiEl.classList.add('selected-anim');
+    nameEl.classList.remove('switching');
+    nameEl.classList.add('revealed');
+
+    setTimeout(() => emojiEl.classList.remove('selected-anim'), 400);
+  }, 200);
+});
+
+// ── Kimi: fade in suave do canvas ao iniciar jogo ──
+EventBridge.on('start_game', function() {
+  const canvas = document.getElementById('game-canvas');
+  if(!canvas) return;
+  canvas.classList.add('fading-in');
+  setTimeout(() => {
+    canvas.classList.remove('fading-in');
+    canvas.classList.add('visible');
+  }, 50);
+});
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   UIManager.init();
@@ -1572,8 +1679,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ══ GAME LOOP ══
 const clock=new THREE.Clock();let time=0;
+let _loopId=null;
+
+function startLoop(){
+  if(_loopId) return; // já rodando
+  clock.getDelta(); // reseta delta acumulado
+  _loopId=requestAnimationFrame(loop);
+}
+
+function stopLoop(){
+  if(_loopId){ cancelAnimationFrame(_loopId); _loopId=null; }
+}
+
 function loop(){
-  requestAnimationFrame(loop);if(!started)return;
+  if(!started){ _loopId=null; return; }
+  _loopId=requestAnimationFrame(loop);
   const dt=Math.min(clock.getDelta(),.05);time+=dt;
   if(!dialogOpen){
     const sp=.10,fwd=new THREE.Vector3(-Math.sin(camH),0,-Math.cos(camH)),right=new THREE.Vector3(Math.cos(camH),0,-Math.sin(camH));
@@ -1622,7 +1742,28 @@ renderer.render(scene,camera);
 
 // ══ START ══
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
-loop();
+// Loop NÃO inicia automaticamente — só via EventBridge.emit('game_started')
+
+// ── Kimi: WebGL context lost/restore para Android WebView ──
+const _canvas = renderer.domElement;
+_canvas.addEventListener('webglcontextlost', (e) => {
+  e.preventDefault();
+  stopLoop();
+  console.warn('[WebGL] contexto perdido — loop pausado');
+}, false);
+_canvas.addEventListener('webglcontextrestored', () => {
+  if(started) startLoop();
+  console.log('[WebGL] contexto restaurado');
+}, false);
+
+// ── Kimi: visibilitychange — pausa quando app vai pro background ──
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){
+    stopLoop();
+  } else {
+    if(started) startLoop();
+  }
+});
 </script>
 </body>
 </html>
