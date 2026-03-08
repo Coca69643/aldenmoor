@@ -238,7 +238,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
    MENU PRINCIPAL
 ══════════════════════════════════════ */
 #main-menu.show { display: flex; }
-#mm-char-preview.show { opacity:1; }
+
 /* Menu buttons */
 /* Mode pills inside menu */
 .mm-pill:active { transform:scale(.95); }
@@ -320,12 +320,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 /* ══════════════════════════════════════
    MENU PRINCIPAL — DeepSeek Layout Fix
 ══════════════════════════════════════ */
-#mm-sword, #mm-title, #mm-sub {
-    position: relative;
-    z-index: 2;
-    margin: 0;
-    padding: 0.5vh 0;
-}
+
 
 /* ── DeepSeek button sizing fix ── */
 
@@ -395,52 +390,22 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 }
 
 /* MAIN MENU */
-#main-menu {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at 50% 50%, #3d2810 0%, #1a1208 70%, #0e0b07 100%);
-    display: flex; flex-direction: column; justify-content: space-between;
-    z-index: 1000; pointer-events: none; overflow-y: auto;
-}
+
 #main-menu-bg {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     opacity: 0.3; pointer-events: none; z-index: 1;
 }
-#mm-logo-area {
-    position: relative; width: 100%; padding: 8vh 0 0 0;
-    text-align: center; z-index: 2; pointer-events: none;
-}
-#mm-sword { font-size: 28px; opacity: 0.7; color: var(--nordic-text2); display: block; margin-bottom: 8px; }
-#mm-title {
-    font-family: 'Cinzel', serif; font-weight: 700;
-    font-size: clamp(36px, 10vw, 64px); color: var(--nordic-gold2);
-    text-shadow: 0 2px 8px rgba(200,164,90,0.4);
-    letter-spacing: 8px; line-height: 1.2; margin: 0;
-}
-#mm-sub {
-    font-family: 'Crimson Text', serif; font-style: italic;
-    font-size: clamp(14px, 3.5vw, 16px);
-    color: var(--nordic-text2); letter-spacing: 4px; margin-top: 4px;
-}
-#mm-char-preview {
-    position: relative; width: 100%; text-align: center;
-    z-index: 2; pointer-events: none; margin: 2vh 0;
-}
-#mm-char-emoji { font-size: 48px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)); }
-#mm-char-name  { font-family: 'Cinzel', serif; font-size: 18px; color: var(--nordic-gold); margin-top: 4px; }
-#mm-char-class { font-family: 'Crimson Text', serif; font-style: italic; font-size: 14px; color: var(--nordic-text2); }
-#mm-buttons {
-    position: relative; width: 100%; padding: 0 20px 32px 20px;
-    box-sizing: border-box; z-index: 10; pointer-events: auto;
-    display: flex; flex-direction: column; gap: 12px;
-}
-#mm-mode-row {
-    display: flex; justify-content: center; gap: 8px;
-    margin-bottom: 4px; width: 100%; position: relative;
-}
-#mm-mode-row::after {
-    content: ''; position: absolute; bottom: -8px; left: 20%; width: 60%;
-    height: 1px; background: rgba(200,164,90,0.2);
-}
+
+
+
+
+
+
+
+
+
+
+
 .mm-pill {
     display: inline-block; padding: 8px 14px; border-radius: 3px;
     background: rgba(26,18,8,0.9); border: 1px solid var(--nordic-stone);
@@ -558,62 +523,21 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 /* UTILS */
 .hidden { display:none !important; }
 
-/* ── Kimi: Animação de seleção de personagem ── */
-#mm-char-emoji {
-  font-size: 48px;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  display: inline-block;
-}
-#mm-char-emoji.switching {
-  transform: scale(0.7) rotate(-8deg);
-  opacity: 0;
-}
-#mm-char-emoji.selected-anim {
-  animation: charPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
-}
-@keyframes charPop {
-  0%   { transform: scale(0.8) rotate(5deg); opacity: 0.5; }
-  60%  { transform: scale(1.15) rotate(-2deg); opacity: 1; }
+60%  { transform: scale(1.15) rotate(-2deg); opacity: 1; }
   100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
-#mm-char-name {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
-  color: var(--nordic-gold);
-  margin-top: 4px;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-#mm-char-name.switching {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-#mm-char-name.revealed {
-  opacity: 1;
-  transform: translateY(0);
+
+
+
+
+.mm-btn.primary { height: 48px; line-height: 48px; }
 }
 
-/* ── Kimi: Responsividade mobile rigorosa ── */
-@media (max-height: 640px) {
-  #mm-logo-area { padding: 4vh 0 0 0; }
-  #mm-title { font-size: clamp(28px, 8vw, 48px); letter-spacing: 5px; }
-  #mm-char-emoji { font-size: 38px; }
-  #mm-char-preview { margin: 1vh 0; }
-  #mm-buttons { padding: 0 20px 20px 20px; gap: 8px; }
-  .mm-btn { height: 44px; line-height: 44px; font-size: 13px; }
-  .mm-btn.primary { height: 48px; line-height: 48px; }
-}
-@media (max-width: 360px) {
-  .mm-pill { padding: 6px 10px; font-size: 11px; }
-  #mm-title { letter-spacing: 4px; }
-  #mm-buttons { padding: 0 12px 20px 12px; }
-}
-@media (min-width: 768px) {
-  #mm-title { font-size: 56px; }
-  #mm-buttons { max-width: 480px; margin: 0 auto; }
+  
+  
 }
 
-/* ── Kimi: Fade in do game canvas ── */
+
 #game-canvas {
   transition: opacity 0.6s ease;
 }
@@ -623,10 +547,299 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 #game-canvas.visible {
   opacity: 1;
 }
+
+/* ════════════════════════════════════════════
+   MAIN MENU — Layout 3 zonas (top/center/bottom)
+   Kimi pattern: space-between sem overflow
+════════════════════════════════════════════ */
+#main-menu {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at 50% 30%, #3d2810 0%, #1a1208 60%, #0e0b07 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none;    /* container transparente */
+  overflow: hidden;         /* NUNCA auto — quebra Android */
+  box-sizing: border-box;
+}
+
+/* ── ZONA TOPO: espadas + título ── */
+#mm-logo-area {
+  width: 100%;
+  padding: 6vh 0 0 0;
+  text-align: center;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+#mm-sword {
+  font-size: 26px;
+  opacity: 0.8;
+  color: var(--nordic-text2);
+  display: block;
+  margin-bottom: 6px;
+}
+#mm-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(34px, 9vw, 60px);
+  color: var(--nordic-gold2);
+  text-shadow: 0 2px 12px rgba(200,164,90,0.5);
+  letter-spacing: 8px;
+  line-height: 1.1;
+  margin: 0;
+}
+#mm-sub {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: clamp(12px, 3vw, 15px);
+  color: var(--nordic-text2);
+  letter-spacing: 5px;
+  margin-top: 4px;
+}
+
+/* ── ZONA CENTRO: emoji do personagem ── */
+#mm-char-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  width: 100%;
+  gap: 6px;
+  opacity: 0.45;
+  transition: opacity 0.4s ease;
+}
+#mm-char-preview.has-char {
+  opacity: 1;
+}
+#mm-char-emoji {
+  font-size: 64px;
+  display: inline-block;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.7));
+  transition: transform 0.18s ease, opacity 0.18s ease;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+#mm-char-emoji.char-out {
+  transform: scale(0.6) rotate(-12deg);
+  opacity: 0;
+}
+#mm-char-emoji.char-in {
+  animation: charBounceIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes charBounceIn {
+  0%   { transform: scale(0.5) rotate(8deg); opacity: 0; }
+  70%  { transform: scale(1.12) rotate(-3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+#mm-char-name {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--nordic-gold);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+#mm-char-name.name-out {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+#mm-char-class {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--nordic-text2);
+}
+
+/* ── ZONA RODAPÉ: pills + botão ── */
+#mm-buttons {
+  width: 100%;
+  padding: 0 20px calc(28px + env(safe-area-inset-bottom, 0px)) 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
+  z-index: 10;
+}
+#mm-mode-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+#mm-mode-row::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 1px;
+  background: rgba(200,164,90,0.2);
+  margin: 0 auto;
+}
+
+/* ── Animação de seleção: nome ── */
+#mm-char-name {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+/* ── Responsividade mobile rigorosa ── */
+@media (max-height: 640px) {
+  #mm-logo-area   { padding: 3vh 0 0 0; }
+  #mm-title       { font-size: clamp(26px, 7vw, 40px); letter-spacing: 5px; }
+  #mm-char-emoji  { font-size: 48px; }
+  #mm-buttons {
+  width: 100%;
+  padding: 0 20px calc(28px + env(safe-area-inset-bottom, 0px)) 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
+  z-index: 10;
+}
+  .mm-btn         { height: 42px; line-height: 42px; font-size: 12px; }
+  .mm-btn.primary { height: 46px; line-height: 46px; }
+}
+@media (max-width: 360px) {
+  .mm-pill  { padding: 6px 10px; font-size: 11px; }
+  #mm-title { letter-spacing: 4px; }
+}
+@media (min-width: 768px) {
+  #mm-buttons {
+  width: 100%;
+  padding: 0 20px calc(28px + env(safe-area-inset-bottom, 0px)) 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
+  z-index: 10;
+}
+  #mm-title   { font-size: 58px; }
+}
+
+/* ══════════════════════════════════════
+   LOADING SCREEN — Claude
+══════════════════════════════════════ */
+#load-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at 50% 40%, #2a1a08 0%, #0e0b07 100%);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  gap: 12px;
+  padding: 40px 32px;
+  box-sizing: border-box;
+}
+#load-screen.active {
+  display: flex;
+}
+#load-logo {
+  font-size: 48px;
+  animation: loadPulse 1.8s ease-in-out infinite;
+  margin-bottom: 8px;
+}
+@keyframes loadPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.8; }
+  50%       { transform: scale(1.12); opacity: 1;   }
+}
+#load-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(28px, 8vw, 44px);
+  color: var(--nordic-gold2);
+  letter-spacing: 8px;
+  text-shadow: 0 0 20px rgba(200,164,90,0.4);
+  margin: 0;
+}
+#load-sub {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: clamp(13px, 3.5vw, 16px);
+  color: var(--nordic-text2);
+  letter-spacing: 3px;
+  margin-bottom: 24px;
+}
+#load-bar-wrap {
+  width: min(320px, 80vw);
+  height: 6px;
+  background: rgba(74,64,53,0.6);
+  border: 1px solid rgba(200,164,90,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+#load-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--nordic-gold), var(--nordic-gold2));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+#load-pct {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--nordic-gold);
+  letter-spacing: 2px;
+}
+#load-hint {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--nordic-text2);
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* ── Botão CONTINUAR destaque especial ── */
+#mm-btn-continue {
+  background: rgba(61,40,16,0.95);
+  border: 2px solid var(--nordic-gold2);
+  color: var(--nordic-gold2);
+  box-shadow: 0 0 16px rgba(200,164,90,0.25);
+}
+#mm-btn-continue:hover {
+  background: rgba(80,52,20,1);
+  border-color: #fff0c0;
+  color: #fff0c0;
+  transform: translateY(-2px);
+}
+/* Preview do personagem salvo no menu */
+#mm-save-info {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--nordic-text2);
+  text-align: center;
+  margin-top: -4px;
+  opacity: 0.8;
+}
 </style>
 </head>
 <body>
 <canvas id="game-canvas"></canvas>
+
+<!-- ══ LOADING SCREEN (Claude — fora do SCREENS DeepSeek) ══ -->
+<div id="load-screen">
+  <div id="load-logo">⚔️</div>
+  <div id="load-title">ALDENMOOR</div>
+  <div id="load-sub">Preparando as Terras do Norte…</div>
+  <div id="load-bar-wrap">
+    <div id="load-bar-fill"></div>
+  </div>
+  <div id="load-pct">0%</div>
+  <div id="load-hint">Gerando terreno procedural</div>
+</div>
 
 <!-- ══ SPLASH ══ -->
 <div id="splash">
@@ -659,26 +872,35 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 <!-- ══ MAIN MENU ══ -->
 <div id="main-menu">
   <div id="main-menu-bg"></div>
+
+  <!-- ZONA TOPO -->
   <div id="mm-logo-area">
     <span id="mm-sword">⚔️</span>
     <div id="mm-title">ALDENMOOR</div>
     <div id="mm-sub">TERRAS DO NORTE · RPG</div>
   </div>
+
+  <!-- ZONA CENTRO: personagem selecionado -->
   <div id="mm-char-preview">
     <span id="mm-char-emoji">🧙</span>
     <div id="mm-char-name">Nenhum</div>
     <div id="mm-char-class">Selecione um personagem</div>
   </div>
+
+  <!-- ZONA RODAPÉ: pills + botão -->
   <div id="mm-buttons">
     <div id="mm-mode-row">
       <div class="mm-pill active" id="mpill-webllm"  onclick="setMode('webllm')">🧠 IA Local</div>
       <div class="mm-pill"        id="mpill-claude"  onclick="setMode('claude')">✨ Claude API</div>
       <div class="mm-pill"        id="mpill-offline" onclick="setMode('offline')">⚡ Offline</div>
     </div>
-    <div class="mm-btn primary" onclick="launchGame()">▶ JOGAR</div>
-    <div class="mm-btn" onclick="openCharSelect()">🧙 PERSONAGEM</div>
+    <div class="mm-btn primary" id="mm-btn-continue" onclick="mmContinue()" style="display:none">▶ CONTINUAR</div>
+    <div id="mm-save-info"></div>
+    <div class="mm-btn"         id="mm-btn-new"      onclick="openCharSelect()">⚔️ NOVA AVENTURA</div>
   </div>
 </div>
+
+
 
 <!-- ══ CHARACTER SELECT ══ -->
 <div id="char-select">
@@ -1603,7 +1825,9 @@ EventBridge.on('game_started', function() {
 
 EventBridge.on('game_stopped', function() {
   started = false;
-  stopLoop(); // ← Kimi: para loop completamente, libera CPU/GPU
+  stopLoop();
+  saveGame();        // salva ao sair do jogo
+  mmCheckSave();     // atualiza botões do menu
 });
 
 EventBridge.on('start_game', function(data) {
@@ -1633,48 +1857,95 @@ EventBridge.on('mode_changed', function(m) {
   console.log('[GameEngine] modo IA:', m);
 });
 
-// ── Kimi: animação de seleção de personagem no menu ──
+// ── Animação de seleção no menu principal ──
 EventBridge.on('character_selected', function(char) {
-  if(!char) return;
-  const emojiEl = document.getElementById('mm-char-emoji');
-  const nameEl  = document.getElementById('mm-char-name');
-  const classEl = document.getElementById('mm-char-class');
-  if(!emojiEl || !nameEl) return;
+  if (!char) return;
+  var emojiEl = document.getElementById('mm-char-emoji');
+  var nameEl  = document.getElementById('mm-char-name');
+  var classEl = document.getElementById('mm-char-class');
+  if (!emojiEl) return;
 
-  // Fase 1: saída
-  emojiEl.classList.add('switching');
-  nameEl.classList.add('switching');
+  // Fase 1: saída (180ms)
+  emojiEl.classList.add('char-out');
+  if (nameEl) { nameEl.classList.add('name-out'); }
 
-  setTimeout(() => {
+  setTimeout(function() {
     // Fase 2: troca conteúdo
     emojiEl.textContent = char.emoji || '🧙';
-    nameEl.textContent  = char.name  || '';
-    if(classEl) classEl.textContent = char.role || '';
+    if (nameEl)  nameEl.textContent  = char.name  || 'Nenhum';
+    if (classEl) classEl.textContent = char.role  || '';
 
     // Fase 3: entrada com bounce
-    emojiEl.classList.remove('switching');
-    emojiEl.classList.add('selected-anim');
-    nameEl.classList.remove('switching');
-    nameEl.classList.add('revealed');
-
-    setTimeout(() => emojiEl.classList.remove('selected-anim'), 400);
-  }, 200);
+    var preview = document.getElementById('mm-char-preview');
+    if (preview) preview.classList.add('has-char');
+    emojiEl.classList.remove('char-out');
+    emojiEl.classList.add('char-in');
+    if (nameEl) {
+      nameEl.classList.remove('name-out');
+    }
+    setTimeout(function() {
+      emojiEl.classList.remove('char-in');
+    }, 400);
+  }, 180);
 });
+
+// ── Loading screen + fade suave ao entrar no mundo 3D ──
+EventBridge.on('start_game', function() {
+  // Esconde o canvas Three.js até loading terminar
+  var canvas = document.getElementById('game-canvas');
+  if (canvas) { canvas.style.opacity = '0'; }
+
+  // Mostra loading screen
+  var loadScreen = document.getElementById('load-screen');
+  if (loadScreen) loadScreen.classList.add('active');
+
+  // Dicas de loading rotativas
+  var hints = [
+    'Gerando terreno procedural…',
+    'Plantando florestas antigas…',
+    'Esculpindo as montanhas…',
+    'Acordando os NPCs…',
+    'Carregando runas nórdicas…',
+    'Quase lá, aventureiro…'
+  ];
+  var bar  = document.getElementById('load-bar-fill');
+  var pct  = document.getElementById('load-pct');
+  var hint = document.getElementById('load-hint');
+  var step = 0;
+  var total = hints.length;
+
+  function nextStep() {
+    if (step >= total) {
+      // Loading completo — esconde loading, mostra Three.js
+      if (loadScreen) loadScreen.classList.remove('active');
+      if (canvas) {
+        canvas.style.transition = 'opacity 0.8s ease';
+        canvas.style.opacity = '1';
+      }
+      return;
+    }
+    var progress = Math.round((step / total) * 100);
+    if (bar)  bar.style.width  = progress + '%';
+    if (pct)  pct.textContent  = progress + '%';
+    if (hint) hint.textContent = hints[step];
+    step++;
+    setTimeout(nextStep, step === total ? 400 : 320);
+  }
+  nextStep();
+});
+
+
+// ── Kimi: animação de seleção de personagem no menu ──
+;
 
 // ── Kimi: fade in suave do canvas ao iniciar jogo ──
-EventBridge.on('start_game', function() {
-  const canvas = document.getElementById('game-canvas');
-  if(!canvas) return;
-  canvas.classList.add('fading-in');
-  setTimeout(() => {
-    canvas.classList.remove('fading-in');
-    canvas.classList.add('visible');
-  }, 50);
-});
+;
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   UIManager.init();
+  // Checa save assim que o menu principal carregar
+  setTimeout(mmCheckSave, 800); // aguarda splash terminar
 });
 
 // ══ GAME LOOP ══
@@ -1763,6 +2034,92 @@ document.addEventListener('visibilitychange', () => {
   } else {
     if(started) startLoop();
   }
+});
+
+// ══════════════════════════════════════════════════════
+// SAVE SYSTEM — Claude (fora do [GUARD])
+// Padrão: Terraria/Valheim — CONTINUAR se save existe,
+//         NOVA AVENTURA sempre vai pra char select
+// ══════════════════════════════════════════════════════
+const SAVE_KEY = 'aldenmoor_save_v1';
+
+function saveGame() {
+  if (!selectedChar) return;
+  var data = {
+    char:    selectedChar,
+    mode:    aiMode,
+    savedAt: Date.now()
+  };
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function loadSave() {
+  try {
+    var raw = localStorage.getItem(SAVE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function deleteSave() {
+  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+}
+
+// Checa save e exibe/esconde botão CONTINUAR no menu
+function mmCheckSave() {
+  var save = loadSave();
+  var btnContinue = document.getElementById('mm-btn-continue');
+  var btnNew      = document.getElementById('mm-btn-new');
+  var preview     = document.getElementById('mm-char-preview');
+  var emojiEl     = document.getElementById('mm-char-emoji');
+  var nameEl      = document.getElementById('mm-char-name');
+  var classEl     = document.getElementById('mm-char-class');
+
+  if (save && save.char) {
+    // TEM SAVE — mostra CONTINUAR com dados do personagem salvo
+    selectedChar = save.char;
+    aiMode       = save.mode || 'webllm';
+
+    if (btnContinue) btnContinue.style.display = '';
+    if (btnNew)      btnNew.textContent = '⚔️ NOVA AVENTURA';
+
+    // Atualiza preview com personagem salvo
+    if (emojiEl) emojiEl.textContent = save.char.emoji || '🧙';
+    if (nameEl)  nameEl.textContent  = save.char.name  || '';
+    if (classEl) classEl.textContent = save.char.role  || '';
+    if (preview) preview.classList.add('has-char');
+
+    // Atualiza pill de modo IA
+    document.querySelectorAll('.mm-pill').forEach(function(p) {
+      p.classList.toggle('active', p.id === 'mpill-' + aiMode);
+    });
+
+    // Tempo desde o último save
+    var mins = Math.floor((Date.now() - save.savedAt) / 60000);
+    var timeStr = mins < 60
+      ? mins + 'min atrás'
+      : Math.floor(mins/60) + 'h atrás';
+    var info = document.getElementById('mm-save-info');
+    if (info) info.textContent = save.char.name + ' · ' + timeStr;
+
+  } else {
+    // SEM SAVE — esconde CONTINUAR, mostra só NOVA AVENTURA
+    if (btnContinue) btnContinue.style.display = 'none';
+    if (btnNew) btnNew.textContent = '⚔️ NOVA AVENTURA';
+  }
+}
+
+// CONTINUAR — carrega save e vai direto pro jogo
+function mmContinue() {
+  var save = loadSave();
+  if (!save || !save.char) { openCharSelect(); return; }
+  selectedChar = save.char;
+  aiMode       = save.mode || 'webllm';
+  UIManager.launchGame();
+}
+
+// Salva ao confirmar personagem e ao entrar no jogo
+EventBridge.on('character_selected', function(char) {
+  if (char) saveGame();
 });
 </script>
 </body>
