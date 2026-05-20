@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-visual">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-visual, minimal-ui">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -86,6 +86,14 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 #talk-btn:active{transform:scale(.9) translateY(0)!important;background:radial-gradient(circle,rgba(201,168,76,.4),rgba(201,168,76,.15));}
 #talk-ico{font-size:24px;}
 #talk-lbl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.5px;color:var(--parchment2);}
+
+#attack-btn{position:absolute;bottom:calc(var(--sb) + 110px);right:18px;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(192,57,43,.4),rgba(192,57,43,.1));border:2px solid rgba(192,57,43,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:all;cursor:pointer;opacity:1;box-shadow:0 0 15px rgba(192,57,43,0.3);touch-action:manipulation;transition:all .1s;}
+#attack-btn:active{transform:scale(.9);background:rgba(192,57,43,.5);}
+#atk-ico{font-size:24px;}
+#atk-lbl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1.5px;color:var(--parchment2);}
+
+.vbar.hg{background:linear-gradient(90deg,#935116,#d35400);width:100%;}
+.vbar.stm{background:linear-gradient(90deg,#1e8449,#2ecc71);width:100%;}
 
 #ai-pip{position:absolute;top:calc(var(--st) + 10px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(6,4,2,.75);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:5px 12px;backdrop-filter:blur(8px);transition:opacity .5s;}
 #ai-pip.hidden{opacity:0;pointer-events:none;}
@@ -232,6 +240,17 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 /* Fullscreen pseudo-class: hide browser chrome artifacts */
 :fullscreen #splash, :-webkit-full-screen #splash {
   background: #000 !important;
+}
+
+/* 100% Fullscreen Hack for Mobile Browser Bars */
+html, body {
+  height: 100%;
+  height: -webkit-fill-available;
+  overflow: hidden;
+}
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 /* ══════════════════════════════════════
@@ -855,9 +874,9 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
   </div>
   <div id="splash-bottom">
     <div id="mode-pills">
-      <div class="mode-pill active" id="pill-webllm" onclick="setMode('webllm')">🧠 IA Local</div>
+      <div class="mode-pill" id="pill-webllm" onclick="setMode('webllm')">🧠 IA Local</div>
       <div class="mode-pill" id="pill-claude" onclick="setMode('claude')">✨ Claude API</div>
-      <div class="mode-pill" id="pill-offline" onclick="setMode('offline')">⚡ Offline</div>
+      <div class="mode-pill active" id="pill-offline" onclick="setMode('offline')">⚡ Offline</div>
     </div>
     <div id="api-wrap">
       <input id="api-key-input" type="password" placeholder="sk-ant-api-key..." autocomplete="off"/>
@@ -890,9 +909,9 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
   <!-- ZONA RODAPÉ: pills + botão -->
   <div id="mm-buttons">
     <div id="mm-mode-row">
-      <div class="mm-pill active" id="mpill-webllm"  onclick="setMode('webllm')">🧠 IA Local</div>
+      <div class="mm-pill" id="mpill-webllm"  onclick="setMode('webllm')">🧠 IA Local</div>
       <div class="mm-pill"        id="mpill-claude"  onclick="setMode('claude')">✨ Claude API</div>
-      <div class="mm-pill"        id="mpill-offline" onclick="setMode('offline')">⚡ Offline</div>
+      <div class="mm-pill active"        id="mpill-offline" onclick="setMode('offline')">⚡ Offline</div>
     </div>
     <div class="mm-btn primary" id="mm-btn-continue" onclick="mmContinue()" style="display:none">▶ CONTINUAR</div>
     <div id="mm-save-info"></div>
@@ -926,13 +945,14 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 <!-- ══ HUD ══ -->
 <div id="hud" style="display:none;">
   <div id="vitals">
-    <div class="vital-row"><div class="vital-label">❤</div><div class="vbar-wrap"><div class="vbar hp"><div class="vbar-fill" style="width:85%"></div></div></div><div class="vval">85</div></div>
-    <div class="vital-row"><div class="vital-label">✦</div><div class="vbar-wrap"><div class="vbar mp"><div class="vbar-fill" style="width:60%"></div></div></div><div class="vval">60</div></div>
+    <div class="vital-row"><div class="vital-label">❤</div><div class="vbar-wrap"><div class="vbar hp"><div class="vbar-fill" id="hp-fill" style="width:100%"></div></div></div><div class="vval" id="hp-val">100</div></div>
+    <div class="vital-row"><div class="vital-label">🍗</div><div class="vbar-wrap"><div class="vbar hg"><div class="vbar-fill" id="hg-fill" style="width:100%"></div></div></div><div class="vval" id="hg-val">100</div></div>
+    <div class="vital-row"><div class="vital-label">⚡</div><div class="vbar-wrap"><div class="vbar stm"><div class="vbar-fill" id="stm-fill" style="width:100%"></div></div></div><div class="vval" id="stm-val">100</div></div>
   </div>
   <div id="loc-hud">
     <div id="loc-name">Vale de Ashenmere</div>
     <div id="loc-region">Reino do Norte</div>
-    <div id="day-time">🌙 Noite Serena</div>
+    <div id="day-time">🕒 08:00</div>
   </div>
   <div id="ai-pip"><div id="pip-dot"></div><div id="pip-txt">—</div></div>
   <div id="npc-approach" onclick="handleTalkClick()">
@@ -942,6 +962,10 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
   </div>
   <div id="joystick-zone"></div>
   <div id="cam-zone"></div>
+  <button id="attack-btn" ontouchstart="handleAttack(event)" onclick="handleAttackClick()">
+    <span id="atk-ico">⚔️</span>
+    <span id="atk-lbl">ATACAR</span>
+  </button>
   <button id="talk-btn" ontouchstart="handleTalk(event)" onclick="handleTalkClick()">
     <span id="talk-ico">💬</span>
     <span id="talk-lbl">FALAR</span>
@@ -990,6 +1014,10 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overflow:clip;bac
 window._MOBILE = (function(){
   // Resize handler — sets all elements to real pixel size
   function resize() {
+    // Force 100% height hack
+    document.documentElement.style.height = window.innerHeight + 'px';
+    document.body.style.height = window.innerHeight + 'px';
+
     var W = window.innerWidth;
     var H = window.innerHeight;
 
@@ -1103,11 +1131,43 @@ const NPCS=[
 const FB={tuck:'Pelas chamas! Bem-vindo à Taberna do Dragão! Posso lhe oferecer uma cerveja?',sable:'...*olha de soslaio*... O que você quer?',lena:'Ah, um novo cliente! Tenho o que você precisa — por um preço justo.',moss:'A árvore de raízes profundas não teme a tempestade... O que te traz aqui?',ferro:'*Para.* Identifique-se. Propósito em Ashenmere?'};
 
 // ══ STATE ══
-let aiMode='webllm',claudeKey='',llmEngine=null,llmReady=false,llmLoading=false;
+let aiMode='offline',claudeKey='',llmEngine=null,llmReady=false,llmLoading=false;
 let activeNPC=null,dialogOpen=false,sending=false,nearNPC=null,started=false;
 const keys={},joy={x:0,y:0};
 let camH=0,camDist=14,camTId=null,camLX=0,mDown=false,mLX=0;
 const player={pos:new THREE.Vector3(0,0,0)};
+let pg, npcMeshes=[], enemies=[], collectibles=[];
+let playerHP=100, playerHG=100, playerSTM=100;
+let gameDayTime=8.0; // 0..24
+const OFFLINE_DB = {
+  tuck: {
+    greetings: ["Olá, viajante! Pelas chamas, você parece com fome!", "Bem-vindo à Taberna! Cerveja ou descanso?"],
+    keywords: {
+      "cerveja": "A melhor de Ashenmere! Apenas 2 moedas.",
+      "fome": "O javali assado hoje está divino!",
+      "perigo": "Dizem que lobos sombrios rondam a Floresta Negra ao norte.",
+      "rei": "O Rei Aldenmoor não é visto há semanas... estranho, não?"
+    }
+  },
+  sable: {
+    greetings: ["... *silêncio* ...", "O que você quer?"],
+    keywords: {
+      "quem": "Apenas um viajante. Nada mais.",
+      "ajuda": "Ajude-se primeiro. O mundo não tem pena.",
+      "espada": "Uma arma é tão boa quanto quem a empunha.",
+      "segredo": "Se eu contasse, não seria um segredo."
+    }
+  },
+  moss: {
+    greetings: ["O vento traz cheiro de mudança...", "As raízes sentem seus passos."],
+    keywords: {
+      "floresta": "Ela respira, ela observa. Respeite o verde.",
+      "magia": "Flui como água, queima como sol.",
+      "cura": "As ervas azuis curam o corpo, a paz cura a alma.",
+      "natureza": "Nós somos apenas convidados aqui."
+    }
+  }
+};
 
 // ══ SPLASH ══
 // ══ THREE.JS ══
@@ -1574,7 +1634,19 @@ async function sendNPC(npc,msg,sys=false){
       const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':claudeKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,system:npc.p,messages:sys?[{role:'user',content:msg}]:[...npc.mem]})});
       const d=await r.json();reply=d.content?.[0]?.text||FB[npc.id];
     } else {
-      await new Promise(r=>setTimeout(r,500+Math.random()*600));reply=FB[npc.id];
+      await new Promise(r=>setTimeout(r,500+Math.random()*600));
+      const db = OFFLINE_DB[npc.id];
+      if(db) {
+        if(sys) {
+          reply = db.greetings[Math.floor(Math.random()*db.greetings.length)];
+        } else {
+          const m = msg.toLowerCase();
+          const match = Object.keys(db.keywords).find(k => m.includes(k));
+          reply = match ? db.keywords[match] : FB[npc.id];
+        }
+      } else {
+        reply = FB[npc.id];
+      }
     }
   }catch{reply=FB[npc.id];}
   rmTyping();addMsg('npc',npc.name,reply);
@@ -1835,6 +1907,21 @@ EventBridge.on('start_game', function(data) {
   if (typeof buildPlayerMesh === 'function' && data.char) {
     buildPlayerMesh(data.char.id);
   }
+// Init NPCs
+NPCS.forEach(n => {
+  const mesh = mkNPC(n);
+  npcMeshes.push(mesh);
+});
+// Init Enemies
+for(let i=0; i<8; i++){
+  const a=Math.random()*Math.PI*2, r=60+Math.random()*40;
+  spawnEnemy('wolf', Math.cos(a)*r, Math.sin(a)*r);
+}
+// Init Collectibles
+for(let i=0; i<15; i++){
+  const a=Math.random()*Math.PI*2, r=20+Math.random()*100;
+  spawnCollectible(Math.random()>0.5?'berry':'herb', Math.cos(a)*r, Math.sin(a)*r);
+}
   // Init AI
   if (data.mode === 'webllm') {
     setPip('loading', 'Iniciando IA...');
@@ -1966,20 +2053,83 @@ function loop(){
   if(!started){ _loopId=null; return; }
   _loopId=requestAnimationFrame(loop);
   const dt=Math.min(clock.getDelta(),.05);time+=dt;
+
+  // Survival Logic
+  playerHG = Math.max(0, playerHG - dt * 0.15);
+  if(playerHG <= 0) playerHP = Math.max(0, playerHP - dt * 2);
+
+  // Day/Night Logic
+  gameDayTime = (gameDayTime + dt * 0.05) % 24;
+  updateEnvironment();
+
   if(!dialogOpen){
-    const sp=.10,fwd=new THREE.Vector3(-Math.sin(camH),0,-Math.cos(camH)),right=new THREE.Vector3(Math.cos(camH),0,-Math.sin(camH));
-    if(Math.abs(joy.x)>.05||Math.abs(joy.y)>.05){player.pos.addScaledVector(right,joy.x*sp);player.pos.addScaledVector(fwd,joy.y*sp);if(joy.x*joy.x+joy.y*joy.y>.01)pg.rotation.y=Math.atan2(joy.x,joy.y);}
-    if(keys['KeyW']||keys['ArrowUp'])player.pos.addScaledVector(fwd,sp);
-    if(keys['KeyS']||keys['ArrowDown'])player.pos.addScaledVector(fwd,-sp);
-    if(keys['KeyA']||keys['ArrowLeft'])player.pos.addScaledVector(right,-sp);
-    if(keys['KeyD']||keys['ArrowRight'])player.pos.addScaledVector(right,sp);
+    let sp = 0.12;
+    if(keys['ShiftLeft'] && playerSTM > 10){ sp = 0.22; playerSTM -= dt*20; }
+    else { playerSTM = Math.min(100, playerSTM + dt*5); }
+
+    const fwd=new THREE.Vector3(-Math.sin(camH),0,-Math.cos(camH)),right=new THREE.Vector3(Math.cos(camH),0,-Math.sin(camH));
+    let move = new THREE.Vector3(0,0,0);
+    if(Math.abs(joy.x)>.05||Math.abs(joy.y)>.05){ move.addScaledVector(right,joy.x); move.addScaledVector(fwd,joy.y); }
+    if(keys['KeyW']||keys['ArrowUp']) move.add(fwd);
+    if(keys['KeyS']||keys['ArrowDown']) move.addScaledVector(fwd,-1);
+    if(keys['KeyA']||keys['ArrowLeft']) move.addScaledVector(right,-1);
+    if(keys['KeyD']||keys['ArrowRight']) move.add(right);
+
+    if(move.lengthSq() > 0.01){
+      move.normalize();
+      player.pos.addScaledVector(move, sp);
+      pg.rotation.y = Math.atan2(move.x, move.z);
+    }
+
     player.pos.x=Math.max(-195,Math.min(195,player.pos.x));player.pos.z=Math.max(-195,Math.min(195,player.pos.z));
-    pg.position.copy(player.pos);
+    player.pos.y = getHeightAt(player.pos.x, player.pos.z);
+    pg.position.lerp(player.pos, 0.2);
   }
-  const cx=player.pos.x+Math.sin(camH)*camDist*.92,cy=2.2+camDist*.44,cz=player.pos.z+Math.cos(camH)*camDist*.92;
+
+  // Update HUD
+  document.getElementById('hp-fill').style.width = playerHP + '%';
+  document.getElementById('hg-fill').style.width = playerHG + '%';
+  document.getElementById('stm-fill').style.width = playerSTM + '%';
+  document.getElementById('hp-val').textContent = Math.round(playerHP);
+  document.getElementById('hg-val').textContent = Math.round(playerHG);
+  document.getElementById('stm-val').textContent = Math.round(playerSTM);
+  const hh=Math.floor(gameDayTime), mm=Math.floor((gameDayTime%1)*60);
+  document.getElementById('day-time').textContent = `🕒 ${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`;
+
+  const cx=player.pos.x+Math.sin(camH)*camDist*.92,cy=pg.position.y+2.2+camDist*.44,cz=player.pos.z+Math.cos(camH)*camDist*.92;
   camera.position.lerp(new THREE.Vector3(cx,cy,cz),.1);
   camera.lookAt(player.pos.x,player.pos.y+1,player.pos.z);
-  npcMeshes.forEach(m=>{m.position.y=Math.sin(time*1.4+m.userData.bob)*.05;m.userData.ring.rotation.z=time*.7;const dx=player.pos.x-m.position.x,dz=player.pos.z-m.position.z;m.rotation.y=Math.atan2(dx,dz);});
+
+  npcMeshes.forEach(m=>{m.position.y=getHeightAt(m.position.x,m.position.z)+Math.sin(time*1.4+m.userData.bob)*.05;m.userData.ring.rotation.z=time*.7;const dx=player.pos.x-m.position.x,dz=player.pos.z-m.position.z;m.rotation.y=Math.atan2(dx,dz);});
+
+  // AI Enemies
+  enemies.forEach(e => {
+    const d = e.position.distanceTo(player.pos);
+    if(d < 15) {
+      const dir = new THREE.Vector3().subVectors(player.pos, e.position).normalize();
+      e.position.addScaledVector(dir, 0.05);
+      e.lookAt(player.pos.x, e.position.y, player.pos.z);
+      if(d < 1.5) { playerHP = Math.max(0, playerHP - 0.5); vibrate(50); }
+    }
+  });
+
+  // Collectibles
+  collectibles.forEach(c => {
+    if(c.visible && c.position.distanceTo(player.pos) < 2) {
+      c.visible = false;
+      if(c.userData.type==='berry') playerHG = Math.min(100, playerHG + 25);
+      else playerHP = Math.min(100, playerHP + 20);
+      toast(`Coletou ${c.userData.type==='berry'?'Fruta':'Erva'}`);
+      vibrate(100);
+      setTimeout(()=> {
+        c.visible=true;
+        const a=Math.random()*Math.PI*2, r=20+Math.random()*100;
+        c.position.set(Math.cos(a)*r, 0, Math.sin(a)*r);
+        c.position.y = getHeightAt(c.position.x, c.position.z);
+      }, 30000);
+    }
+  });
+
   fire.intensity=2.2+Math.sin(time*8)*.45+Math.sin(time*13.5)*.25;
   cf.userData.glow.material.opacity=.45+Math.sin(time*7)*.18;
   cf.userData.glow.scale.setScalar(.88+Math.sin(time*9)*.1);
@@ -1991,6 +2141,13 @@ function loop(){
     if(closest){document.getElementById('npc-ap-name').textContent=closest.name;document.getElementById('npc-ap-role').textContent=closest.role;ap.classList.add('show');tb.classList.add('show');}
     else{ap.classList.remove('show');tb.classList.remove('show');}
   }
+
+  if(playerHP <= 0) {
+    toast("☠️ Você sucumbiu às terras de Aldenmoor...");
+    playerHP = 100; playerHG = 100; player.pos.set(0,0,0);
+    pg.position.copy(player.pos);
+  }
+
   // Update minimap player position
 const mmDisp=document.getElementById('minimap-display');
 if(mmDisp&&window._mmCanvas){
@@ -2035,6 +2192,83 @@ document.addEventListener('visibilitychange', () => {
     if(started) startLoop();
   }
 });
+
+function vibrate(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
+
+function handleAttack(e){ e.preventDefault(); doAttack(); }
+function handleAttackClick(){ doAttack(); }
+
+function doAttack(){
+  vibrate(70);
+  // Simple sphere hit detection
+  enemies.forEach(e => {
+    if(e.position.distanceTo(player.pos) < 3.5){
+      toast("💥 Acertou!");
+      e.position.addScaledVector(new THREE.Vector3().subVectors(e.position, player.pos).normalize(), 5);
+      vibrate([50, 30, 50]);
+    }
+  });
+}
+
+function updateEnvironment(){
+  const h = gameDayTime;
+  let intensity = 0;
+  let color = new THREE.Color(0x0a1520);
+  if(h > 5 && h < 7){ intensity = (h-5)/2; color.lerpColors(new THREE.Color(0x0a1520), new THREE.Color(0xff9966), (h-5)/2); }
+  else if(h >= 7 && h <= 17){ intensity = 1.1; color = new THREE.Color(0xffffff); }
+  else if(h > 17 && h < 19){ intensity = 1.1 - (h-17)/2; color.lerpColors(new THREE.Color(0xffffff), new THREE.Color(0xff6600), (h-17)/2); }
+  else { intensity = 0.1; color = new THREE.Color(0x0a1520); }
+
+  sun.intensity = intensity;
+  sun.position.set(Math.cos(h/24*Math.PI*2-Math.PI/2)*100, Math.sin(h/24*Math.PI*2-Math.PI/2)*100, 50);
+  scene.fog.color.copy(color);
+  renderer.setClearColor(color);
+}
+
+function buildPlayerMesh(classId){
+  if(pg) scene.remove(pg);
+  pg = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.2, 0.4), new THREE.MeshLambertMaterial({color: classId==='mago'?0x9b59b6:classId==='ladino'?0x1abc9c:0xe74c3c}));
+  body.position.y = 0.6;
+  pg.add(body);
+  const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), new THREE.MeshLambertMaterial({color: 0xffdbac}));
+  head.position.y = 1.4;
+  pg.add(head);
+  const weapon = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.0, 0.1), new THREE.MeshLambertMaterial({color: 0xcccccc}));
+  weapon.position.set(0.4, 0.8, 0.2);
+  pg.add(weapon);
+  scene.add(pg);
+}
+
+function mkNPC(n){
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 1.6, 8), new THREE.MeshLambertMaterial({color: n.color}));
+  body.position.y = 0.8;
+  g.add(body);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(0.8, 1.0, 16), new THREE.MeshBasicMaterial({color: n.color, transparent: true, opacity: 0.5, side: THREE.DoubleSide}));
+  ring.rotation.x = Math.PI/2;
+  ring.position.y = 0.05;
+  g.add(ring);
+  g.userData = { bob: Math.random()*10, ring: ring };
+  g.position.set(n.pos.x, getHeightAt(n.pos.x, n.pos.z), n.pos.z);
+  scene.add(g);
+  return g;
+}
+
+function spawnEnemy(type, x, z){
+  const g = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 1.2), new THREE.MeshLambertMaterial({color: 0x333333}));
+  g.position.set(x, getHeightAt(x, z) + 0.4, z);
+  scene.add(g);
+  enemies.push(g);
+}
+
+function spawnCollectible(type, x, z){
+  const g = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8), new THREE.MeshLambertMaterial({color: type==='berry'?0xff0000:0x00ff00}));
+  g.position.set(x, getHeightAt(x, z) + 0.3, z);
+  g.userData = { type: type };
+  scene.add(g);
+  collectibles.push(g);
+}
 
 // ══════════════════════════════════════════════════════
 // SAVE SYSTEM — Claude (fora do [GUARD])
